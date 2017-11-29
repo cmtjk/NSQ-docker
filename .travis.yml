@@ -1,0 +1,12 @@
+services:
+    - docker
+language: bash
+branches:
+  only:
+    - master
+env:
+    global:
+        - NAME=nsq-for-arm
+        - REPO_URL="https://github.com/nsqio/nsq.git"
+        - VERSION=latest
+script: ./build.sh
