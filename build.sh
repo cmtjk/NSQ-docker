@@ -37,6 +37,8 @@ docker login -u ${DOCKER_USER} -p ${DOCKER_PASS} ${DOCKER_REPO}
 docker push "${DOCKER_USER}/${NAME}:${VERSION}"
 
 # Create multiarch manifest
+wget https://github.com/estesp/manifest-tool/releases/download/v0.7.0/manifest-tool-linux-amd64
+chmod +x manifest-tool-linux-amd64
 cat > ${TMP_DIR}/${VERSION}-multiarch.yml << EOF
 image: r3r57/nsq-multiarch:${VERSION}
 manifests:
@@ -49,9 +51,20 @@ manifests:
       architecture: arm
       os: linux
 EOF
-wget https://github.com/estesp/manifest-tool/releases/download/v0.7.0/manifest-tool-linux-amd64
-chmod +x manifest-tool-linux-amd64
 ./manifest-tool-linux-amd64 push from-spec ${TMP_DIR}/${VERSION}-multiarch.yml
+cat > ${TMP_DIR}/latest-multiarch.yml << EOF
+image: r3r57/nsq-multiarch:${VERSION}
+manifests:
+  - image: nsqio/nsq:${VERSION}
+    platform:
+      architecture: amd64
+      os: linux
+  - image: r3r57/nsq-for-arm:${VERSION}
+    platform:
+      architecture: arm
+      os: linux
+EOF
+./manifest-tool-linux-amd64 push from-spec ${TMP_DIR}/latest-multiarch.yml
 
 # Clean
 rm -rf ${TMP_DIR}
