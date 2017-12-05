@@ -53,7 +53,7 @@ manifests:
 EOF
 ./manifest-tool-linux-amd64 push from-spec ${TMP_DIR}/${VERSION}-multiarch.yml
 cat > ${TMP_DIR}/latest-multiarch.yml << EOF
-image: r3r57/nsq-multiarch:${VERSION}
+image: r3r57/nsq-multiarch:latest
 manifests:
   - image: nsqio/nsq:${VERSION}
     platform:
